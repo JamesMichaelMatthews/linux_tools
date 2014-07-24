@@ -1,0 +1,126 @@
+
+Disable wicd at startup:
+  (Doing this allows /etc/network/interfaces to be used, see below.)
+  Disable autostartup of the wicd client when the desktop is started: 
+    (Keep in mind, the wicd service is likely started anyway, see below.)
+    cd /etc/xdg/autostart
+    mv wicd-tray.desktop wicd-tray.desktop.donotstart
+    (I also commented out everything in that file, just in case.)
+  Re-enable with:
+    cd /etc/xdg/autostart
+    mv wicd-tray.desktop.donotstart wicd-tray.desktop
+    (Uncomment the file, if needed.)
+
+  Disable autostartup of the wicd service:
+    update-rc.d -f wicd remove
+  Re-enable with: 
+    update-rc.d wicd defaults
+
+  Temporarily disable the wicd service:
+    (This will stop a client/gui from working, so exit it as well.)
+    service wicd stop
+  Re-enable:
+    service wicd start
+
+Setup /etc/network/interfaces networking:
+  Setup eth0 for dhcp (for example, plugging into the gtri wall)
+    (To use this, you'll either need a way to connect via wifi, or use the monitor, and be sure to only connect the monitor cable with the battery disconnected!)
+    Write this into /etc/network/interfaces
+      (comment out any other eth0 related lines)
+      auto eth0
+      iface eth0 inet dhcp
+    Setup eth0
+      ifdown eth0
+      ifup --force eth0
+
+  Setup eth0 for static (for example, plugging into another computer)
+    (Do the same thing on the other computer, but use a different address.)
+    Write this into /etc/network/interfaces
+      (comment out any other eth0 related lines)
+      auto eth0
+      iface eth0 inet static
+      address 192.168.1.100
+      netmask 255.255.255.0
+    Setup eth0
+      ifdown eth0
+      ifup --force eth0
+
+Networking Setup:
+--
+Helpful Network and Wifi Setup Sites (there is a lot of wrong information):
+https://help.ubuntu.com/12.04/serverguide/network-configuration.html
+https://help.ubuntu.com/community/WifiDocs/WirelessAccessPoint
+http://crunchbang.org/forums/viewtopic.php?id=16624
+http://www.linuxhomenetworking.com/wiki/index.php/Quick_HOWTO_:_Ch13_:_Linux_Wireless_Networking#.U0GONs6Ux0w
+http://ubuntuforums.org/showthread.php?t=202834
+http://www.freebsd.org/cgi/man.cgi?wpa_supplicant.conf%285%29
+https://bbs.archlinux.org/viewtopic.php?pid=1125232
+--
+Uninstall or disable any running network managers.
+In the case of wicd, to stop it from running:
+ps -ef | grep wicd
+to see what is running.  You can use
+sudo service wicd stop
+to kill the daemon process, and you might have to manually kill the gui and wpa_supplicant processes.
+--
+You can disable a service from running at startup by using:
+update-rc.d -f service_name remove
+--
+Next, setup the networking manually by putting the following (or similar) lines inside the /etc/network/interfaces file.  These will cause eth0 to use a statically set IP so you can connect to it directly from another machine, and will cause wlan0 to get an IP using dhcp based on the settings inside the wpa_supplicant.conf file.
+--Start of File--
+auto lo
+iface lo inet loopback
+#
+#auto eth0
+#iface eth0 inet dhcp
+#
+auto eth0
+iface eth0 inet static
+address 192.168.1.110
+netmask 255.255.255.0
+#
+auto wlan0
+iface wlan0 inet dhcp
+pre-up wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+post-down killall -q wpa_supplicant
+--End of File--
+--
+Here is the wpa_supplicant.conf file:
+--Start of File--
+ctrl_interface=/var/run/wpa_supplicant
+
+network={
+	ssid="your_special_ssid"
+        key_mgmt=WPA-PSK
+        #psk="your_password_string"
+	psk=a6952ce6bc963cb50ead10288d553e46ee27d516aba9b8baa7eaa07aaed597eb
+}
+
+network={
+	ssid="GTwifi"
+        scan_ssid=1
+        key_mgmt=WPA-EAP
+        eap=PEAP
+        pairwise=CCMP
+        group=CCMP
+        phase1="peaplabel=0"
+        phase2="auth=MSCHAPV2"
+        identity="your_username"
+        #password="your_password_string"
+        password=hash:e354194a3f65ca24ebee9cd8e4c664cb
+}
+--End of File--
+This file is written to first try to connect to a normal wireless router setup with wpa encryption, typical for normal routers, where you simply have to give a known password to get access.  It is possible to put your real password into this file directly, but it is better to turn it into a hash using:
+  wpa_passphrase your_ssid your_password_string
+and this will spit out the network={} block including the new psk hash.  Simply copy this information into this file.
+The second network, to be used if the first does not work, is the GTwifi network.  You can look up help, or the man pages, for wpa_supplicant.conf for examples, and this is where I found this information, though, of course you must know the encryption method of the network before hand, but this is well advertised for GTwifi. Similarly as before, you can include your actual password, but a hash is so much safer.  Finding a way to obtain this hash was much more difficult, and you cannot use the same wpa_passphrase tool as before.  This answer was found in one of the forums listed above.  Enter the following on the command line to get the hash, and you must use the whole thing.  I'm not sure why you need everything below, but I tried variations and they did not work.
+  echo -n password_here | iconv -t utf16le | openssl md4
+The same user also claims this script will work, but I didn't try it.
+#!/usr/bin/python2
+import smbpasswd
+import sys
+print smbpasswd.nthash(sys.argv[1])
+
+It is possible to not use the /etc/network/interfaces file, and to instead just write scripts that do the same things, still launching the wpa_supplicant process with your specific .conf file, where you directly invoke the ip, ipconfig, iwconfig, dhclient, and wpa_supplicant commands.  I think this is the proper approach for our configuration where we may be switching to different routers, etc.  I haven't done this yet, however.
+
+
