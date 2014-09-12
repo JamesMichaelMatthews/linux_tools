@@ -3,14 +3,14 @@
 "  Install:
 "    cd ~/.vim
 "    git clone https://github.com/tpope/vim-pathogen
-"    ls -s ./vim-pathogen/autoload autoload
+"    ln -s ./vim-pathogen/autoload autoload
 execute pathogen#infect()
 "
 "for clang_complete
 "  Install:
 "    cd ~/.vim/bundle
 "    git clone https://github.com/Rip-Rip/clang_complete
-"    sudo apt-get install libclangi-3.3-dev
+"    sudo apt-get install libclang-3.3-dev
 "  To use this create .clang_complete files with
 "   cmake by cd'ing into the build folder and running
 "       CC='/home/user/.vim/bundle/clang_complete/bin/cc_args.py gcc' \
