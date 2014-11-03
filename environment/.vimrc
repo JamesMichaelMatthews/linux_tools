@@ -1,15 +1,19 @@
 
 "use vim pathogen for plugins (see the github page)
 "  Install:
+"    mkdir ~/.vim
 "    cd ~/.vim
 "    git clone https://github.com/tpope/vim-pathogen
+" OR git clone https://github.com/JamesMichaelMatthews/vim-pathogen
 "    ln -s ./vim-pathogen/autoload autoload
 execute pathogen#infect()
 "
 "for clang_complete
 "  Install:
+"    mkdir ~/.vim/bundle
 "    cd ~/.vim/bundle
 "    git clone https://github.com/Rip-Rip/clang_complete
+" OR git clone https://github.com/JamesMichaelMatthews/clang_complete
 "    sudo apt-get install libclang-3.3-dev
 "  To use this create .clang_complete files with
 "   cmake by cd'ing into the build folder and running
@@ -47,6 +51,7 @@ set pumheight=20
 "  Install:
 "    cd ~/.vim/bundle
 "    git clone https://github.com/ervandew/supertab
+" OR git clone https://github.com/JamesMichaelMatthews/supertab
 "  Fall back to super tab for completion.
 :let g:SuperTabDefaultCompletionType='<c-x><c-u><c-p>'
 "
@@ -65,6 +70,7 @@ set pumheight=20
 "  Install:
 "    cd ~/.vim/bundle
 "    git clone https://github.com/scrooloose/nerdtree
+" OR git clone https://github.com/JamesMichaelMatthews/nerdtree
 "    
 
 "turn on color, allow normal backspaces
