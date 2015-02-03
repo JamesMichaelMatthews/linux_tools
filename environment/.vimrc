@@ -58,8 +58,18 @@ set pumheight=20
 "  tell vim to look into parent folders for the tags file (the ;)
 :set tags=./tags;
 "  cycle in and out of tags easier
+"  go to the first tag, and create the tag list
 :nnoremap } <C-]>
+:vnoremap } <C-]>
+"  go to the next tag in the tag list
+:nnoremap }} :tnext<CR>
+:vnoremap }} :tnext<CR>
+"  go to the prev in the tag list
+:nnoremap {{ :tprev<CR>
+:vnoremap {{ :tprev<CR>
+"  back to prev position
 :nnoremap { <C-t>
+:vnoremap { <C-t>
 "
 "also, go get NERDTree
 "  Install:
