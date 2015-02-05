@@ -123,4 +123,8 @@ print smbpasswd.nthash(sys.argv[1])
 
 It is possible to not use the /etc/network/interfaces file, and to instead just write scripts that do the same things, still launching the wpa_supplicant process with your specific .conf file, where you directly invoke the ip, ipconfig, iwconfig, dhclient, and wpa_supplicant commands.  I think this is the proper approach for our configuration where we may be switching to different routers, etc.  I haven't done this yet, however.
 
+Scan for available wifi access points using:
+sudo iwconfig wlan0 scan
+It doesn't always seem to work, but eventually it does.
+
 

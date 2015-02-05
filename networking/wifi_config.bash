@@ -34,6 +34,7 @@ if [ "$1" = "up" ]; then
   sudo ifconfig $interface down
   sudo killall -q wpa_supplicant
   sudo service wicd stop
+  sudo killall -q wicd-gtk
 
   #bring it up, start wpa_supplicant, run dhclient
   sudo ifconfig $interface up
