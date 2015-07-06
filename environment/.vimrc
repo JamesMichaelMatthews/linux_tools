@@ -118,7 +118,43 @@ set pumheight=20
 :nnoremap < <C-w><
 :nnoremap > <C-w>>
 
+"  NOTE: the ^M is literally one character, not two.
+"        It is the newline, to literally run a command.
+"        To insert it, type ctrl-v <enter>.
+
 "store a macro to set the editing window for :Explore
 "  but nerdtree is better
-:let @e=':let g:netrw_chgwin=winnr()'
+:let @e=':let g:netrw_chgwin=winnr()'
+
+"Set the background color to indicate 80 characters.
+"  Set the color
+:highlight ColorColumn ctermbg=7 guibg=#888888
+"  Set the columns that will be colored
+"  Note that colorcolumn is a comma seperated list of ALL column numbers
+":set colorcolumn=80
+"    OR
+":let &colorcolumn=join(range(81,999),",")
+"  Set a macro
+":let @c=':let &colorcolumn=join(range(81,999),",")'
+"  Set Script Local functions and command mappings
+:command EightyHighlightOn :call <SID>EightyHighlightOn()
+:command EightyHighlightOff :call <SID>EightyHighlightOff()
+:command EightyHighlight :call <SID>EightyHighlight()
+function! s:EightyHighlightOn()
+  :let w:eightyon=1
+  :let &l:colorcolumn=join(range(81,999),",")
+endfunction
+function! s:EightyHighlightOff()
+  if exists('w:eightyon')
+    :unlet w:eightyon
+  endif
+  :let &l:colorcolumn=""
+endfunction
+function! s:EightyHighlight() "Toggle
+  if exists('w:eightyon')
+    :call <SID>EightyHighlightOff()
+  else
+    :call <SID>EightyHighlightOn()
+  endif
+endfunction
 
