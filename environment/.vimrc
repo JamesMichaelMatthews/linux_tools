@@ -82,6 +82,12 @@ set pumheight=20
 "    git clone https://github.com/scrooloose/nerdtree
 " OR git clone https://github.com/JamesMichaelMatthews/nerdtree
 "    
+"
+"Doxygen comments
+"  Install:
+"    cd ~/.vim/bundle
+"    git clone https://github.com/vim-scripts/DoxygenToolkit.vim
+" OR git clone https://github.com/JamesMichaelMatthews/DoxygenToolkit.vim
 
 "turn on color, allow normal backspaces
 :syntax on
