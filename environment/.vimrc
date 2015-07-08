@@ -86,8 +86,23 @@ set pumheight=20
 "Doxygen comments
 "  Install:
 "    cd ~/.vim/bundle
-"    git clone https://github.com/vim-scripts/DoxygenToolkit.vim
-" OR git clone https://github.com/JamesMichaelMatthews/DoxygenToolkit.vim
+"    git clone https://github.com/JamesMichaelMatthews/DoxygenToolkit.vim
+"      Note:
+"        Forked from git clone https://github.com/vim-scripts/DoxygenToolkit.vim,
+"        with modifications to work better with autoindent and smartindent,
+"        based on difficulties if you want to use " * " instead of "* ".
+"        But, it's not perfect, and doesn't respect initial indents.
+"        Initial indents would work with auto/smartindent normally, but
+"        I turn them off internally to allow the leading space to work.
+"        Maybe need to modify the code to simply initially add a line with an indent,
+"        not use leading spaces, then remove the initial line when finished.
+"        This would allow us to not bother with auto/smart indent at all.
+"
+" Set comments with more standard Doxygen indents.
+let g:DoxygenToolkit_interCommentTag = " * "
+let g:DoxygenToolkit_interCommentBlock = " * "
+let g:DoxygenToolkit_endCommentTag = " */"
+let g:DoxygenToolkit_endCommentBlock = " */"
 
 "turn on color, allow normal backspaces
 :syntax on
@@ -98,6 +113,18 @@ set pumheight=20
 :vmap < <gv
 :set expandtab
 :set shiftwidth=2
+
+"auto indent and comments
+" c: autowrap comments using textwidth
+" r: auto comment a newline after <Enter>
+" o: auto comment after 'o' or 'O'
+" j: remove comment leaders when joining lines
+" autoindent: repeat indent from previous line
+" smartindent: autoindent based on language
+:set textwidth=80
+:set formatoptions=croj
+:set autoindent
+:set smartindent
 
 "make all yanks go into the 0 register
 :nnoremap yy "0yy
