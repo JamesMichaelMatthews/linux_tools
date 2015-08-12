@@ -6,11 +6,12 @@
 "    git clone https://github.com/tpope/vim-pathogen
 " OR git clone https://github.com/JamesMichaelMatthews/vim-pathogen
 "    ln -s ./vim-pathogen/autoload autoload
+"    mkdir ~/.vim/bundle
+"    cd ~/.vim/bundle
 execute pathogen#infect()
 "
 "for clang_complete
 "  Install:
-"    mkdir ~/.vim/bundle
 "    cd ~/.vim/bundle
 "    git clone https://github.com/Rip-Rip/clang_complete
 " OR git clone https://github.com/JamesMichaelMatthews/clang_complete

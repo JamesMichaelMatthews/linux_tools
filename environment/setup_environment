@@ -1,0 +1,152 @@
+#!/bin/bash
+# Copies all config files and clones needed repos.
+
+func() {
+
+  #Get the directory of this script, so the user can run it from anywhere.
+  #  This method uses the dirname command to return the directory of the 
+  #  given filepath, possibly relative, returning "." if the path has no /'s.
+  #echo $(dirname "${BASH_SOURCE[0]}")  
+  #  "cd" into the directory of this file and run pwd, resulting
+  #  in an absolute path even if the original was relative.
+  local ScriptDir
+  ScriptDir="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )";
+  #echo ${ScriptDir}
+
+  #Get the real script directory with all symlinks removed
+  local RealScriptDir
+  RealScriptDir="$( cd "$(dirname "$(readlink -fn "${BASH_SOURCE[0]}")")" && pwd )";
+  #echo ${RealScriptDir}
+
+  #Get the working directory where the user ran this script.
+  local OriginalDir
+  OriginalDir="$(pwd)";
+
+  #Get the user name.
+  #if [ $(id -u) -eq 0 ]; then
+  #  USERNAME=$SUDO_USER; #if sudo
+  #else
+  #  USERNAME=$USER; #if not sudo
+  #fi
+  USERNAME=$(who | awk 'NR==1{print $1}')
+
+  PROG=$(basename "$0")
+  USAGE="
+      $PROG [<options>]
+      Options:
+        -h        Print this message.
+        -o        Overwrite config files.
+  "
+  
+  if [ "$(dpkg --get-selections 'git')" == "" ]; then
+    echo "The 'git' package isn't installed, so we will install it."
+    echo sudo apt-get install git
+    sudo apt-get install git
+  fi
+  
+  #defaults
+  OVERWRITE=0
+  HELP=0
+  
+  # Check for options
+  while getopts ":ho" opt; do
+      case $opt in
+      h)
+          HELP=1
+          ;;
+      o)
+          OVERWRITE=1
+          ;;
+      \?)
+          echo "Invalid option: -$OPTARG"
+          exit 1
+          ;;
+      esac
+  done
+  shift $((OPTIND - 1))
+  
+  if [ $HELP -eq 1 ]; then
+    echo "$USAGE"
+    exit 1
+  fi
+
+  #check for overwrite
+  if [ $OVERWRITE -eq 0 ]; then
+    EXIT=0
+    if [ -e ~/.vimrc ]; then
+      echo ~/.vimrc already exists, exiting.
+      EXIT=1
+    fi
+    if [ -e ~/.tmux.conf ]; then
+      echo ~/.tmux.conf already exists, exiting.
+      EXIT=1
+    fi
+    if [ -e ~/.vim ]; then
+      echo ~/.vim already exists, exiting.
+      EXIT=1
+    fi
+    if [ -e ~/.vim/vim-pathogen ]; then
+      echo ~/.vim/vim-pathogen already exists, exiting.
+      EXIT=1
+    fi
+    if [ -e ~/.vim/autoload ]; then
+      echo ~/.vim/autoload already exists, exiting.
+      EXIT=1
+    fi
+    if [ -e ~/.vim/bundle ]; then
+      echo ~/.vim/bundle already exists, exiting.
+      EXIT=1
+    fi
+    if [ -e ~/.vim/bundle/clang_complete ]; then
+      echo ~/.vim/bundle/clang_complete already exists, exiting.
+      EXIT=1
+    fi
+    if [ -e ~/.vim/bundle/supertab ]; then
+      echo ~/.vim/bundle/supertab already exists, exiting.
+      EXIT=1
+    fi
+    if [ -e ~/.vim/bundle/nerdtree ]; then
+      echo ~/.vim/bundle/nerdtree already exists, exiting.
+      EXIT=1
+    fi
+    if [ -e ~/.vim/bundle/DoxygenToolkit.vim ]; then
+      echo ~/.vim/bundle/DoxygenToolkit.vim already exists, exiting.
+      EXIT=1
+    fi
+
+    if [ $EXIT -eq 1 ]; then
+      cd $OriginalDir
+      exit 1
+    fi
+  fi
+  
+  #copy config files
+  cp $RealScriptDir/.vimrc ~/
+  cp $RealScriptDir/.tmux.conf ~/
+
+  #setup vim tools
+  mkdir -p ~/.vim
+  cd ~/.vim
+  # vim-pathogen
+  git clone https://github.com/JamesMichaelMatthews/vim-pathogen
+  ln -s ./vim-pathogen/autoload autoload
+  mkdir -p ~/.vim/bundle
+  cd ~/.vim/bundle
+  # clang_complete
+  git clone https://github.com/JamesMichaelMatthews/clang_complete
+  sudo apt-get install libclang-3.3-dev
+  # supertab
+  git clone https://github.com/JamesMichaelMatthews/supertab
+  # ctags
+  sudo apt-get install exuberant-ctags
+  # NERDTree
+  git clone https://github.com/JamesMichaelMatthews/nerdtree
+  # Doxygen Toolkit
+  git clone https://github.com/JamesMichaelMatthews/DoxygenToolkit.vim
+
+  cd $OriginalDir
+  
+}
+
+func $@
+
