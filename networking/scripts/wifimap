@@ -1,0 +1,15 @@
+#! /bin/bash
+
+if [ $# -eq 1 ]
+  IWLIST=$1
+then
+  IWLIST=$(sudo iwlist wlan0 scan < /dev/null)
+fi
+
+Subset=$(echo "$IWLIST" | grep -E "Frequency|Quality|ESSID" -)
+
+Oneline=$(echo "$Subset" | awk -F'\n' '{if((NR % 3) != 0) {printf("%s, ", $0)} else {printf("%s\n", $0)}}')
+
+echo Found Networks:
+echo "$Oneline" | sed -r 's/.*Frequency:([0-9.]+).*Channel ([0-9]+).*Quality=([0-9/]+).*level=([-0-9]+).*ESSID:"(.*)".*/\1 GHz (Ch: \2)\t \4 dBm (qual: \3)\t \5/g'
+
