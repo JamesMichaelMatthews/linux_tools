@@ -1,8 +1,8 @@
 #! /bin/bash
 
-if [ $# -eq 1 ]
-  IWLIST=$1
-then
+if [[ $# -eq 1 ]]; then
+  IWLIST=$(cat $1)
+else
   IWLIST=$(sudo iwlist wlan0 scan < /dev/null)
 fi
 
