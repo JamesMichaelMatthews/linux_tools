@@ -119,6 +119,9 @@ func() {
       exit 1
     fi
   fi
+
+  #install apps
+  sudo apt-get install vim tmux
   
   #copy config files
   cp $RealScriptDir/.vimrc ~/
