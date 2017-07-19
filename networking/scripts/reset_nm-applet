@@ -1,0 +1,6 @@
+#! /bin/bash
+
+pkill -x nm-applet
+nm-applet &>/dev/null </dev/null &
+disown "%nm-applet"
+
