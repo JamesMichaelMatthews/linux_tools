@@ -147,6 +147,23 @@ func() {
   # Doxygen Toolkit
   git clone https://github.com/JamesMichaelMatthews/DoxygenToolkit.vim
 
+  #Setup our bashrc
+  envsetup_scriptname="my_bash_setup"
+  envsetup_line="source $RealScriptDir/my_bash_setup.bash"
+  bashenv_lines="
+
+# Setup our environment
+${envsetup_line}
+"
+  if [ "$(cat /home/$USERNAME/.bashrc | grep $envsetup_scriptname)" == "" ]; then
+    #It appears the script has never been added to .bashrc. Add it.
+    echo "$bashenv_lines" >> /home/$USERNAME/.bashrc
+  else
+    #The script has been added already, but it may need to be updated.
+    sed -ri -e 's|^.*'"$envsetup_scriptname"'.*$|'"$envsetup_line"'|' /home/$USERNAME/.bashrc
+    [ "$?" -ne "0" ] && { echo "Error adding to .bashrc."; }
+  fi
+
   cd $OriginalDir
   
 }
