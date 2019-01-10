@@ -1,0 +1,12 @@
+Quick notes on what I followed to setup the email ip script.
+
+To Setup email:
+https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-14-04
+https://www.linode.com/docs/email/postfix/configure-postfix-to-send-mail-using-gmail-and-google-apps-on-debian-or-ubuntu/
+
+To Get the external IP:
+https://www.cyberciti.biz/faq/how-to-find-my-public-ip-address-from-command-line-on-a-linux/
+
+To Setup the email script in cron.
+https://help.ubuntu.com/community/CronHowto
+

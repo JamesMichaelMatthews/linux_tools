@@ -1,0 +1,87 @@
+#!/bin/bash
+# Installs the email script.
+
+func() {
+
+  #Get the directory of this script, so the user can run it from anywhere.
+  #  This method uses the dirname command to return the directory of the 
+  #  given filepath, possibly relative, returning "." if the path has no /'s.
+  #echo $(dirname "${BASH_SOURCE[0]}")  
+  #  "cd" into the directory of this file and run pwd, resulting
+  #  in an absolute path even if the original was relative.
+  local ScriptDir
+  ScriptDir="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )";
+  #echo ${ScriptDir}
+
+  #Get the real script directory with all symlinks removed
+  local RealScriptDir
+  RealScriptDir="$( cd "$(dirname "$(readlink -fn "${BASH_SOURCE[0]}")")" && pwd )";
+  #echo ${RealScriptDir}
+
+  #Get the working directory where the user ran this script.
+  local OriginalDir
+  OriginalDir="$(pwd)";
+
+  #Get the user name.
+  #if [ $(id -u) -eq 0 ]; then
+  #  USERNAME=$SUDO_USER; #if sudo
+  #else
+  #  USERNAME=$USER; #if not sudo
+  #fi
+  USERNAME=$(who | awk 'NR==1{print $1}')
+
+  PROG=$(basename "$0")
+  USAGE="
+      $PROG [<options>]
+      Options:
+        -h        Print this message.
+  "
+  
+  #defaults
+  HELP=0
+  
+  # Check for options
+  while getopts ":h" opt; do
+      case $opt in
+      h)
+          HELP=1
+          ;;
+      \?)
+          echo "Invalid option: -$OPTARG"
+          exit 1
+          ;;
+      esac
+  done
+  shift $((OPTIND - 1))
+  
+  if [ $HELP -eq 1 ]; then
+    echo "$USAGE"
+    return 0
+  fi
+
+  #Copy the script to a good location
+  IPScriptDir=/opt/linux_tools/scripts/
+  IPScriptName=email_external_ip
+  IPScriptPath=$IPScriptDir/$IPScriptName
+  sudo mkdir -p $IPScriptDir
+  sudo cp $ScriptDir/$IPScriptName $IPScriptPath
+
+  #Setup the cron file
+  CRONLine="0 */1 * * * $USERNAME $IPScriptPath"
+  CRONFile=/etc/cron.d/$USERNAME
+  sudo touch $CRONFile
+  sudo bash -c "echo \"$CRONLine\" >> /etc/cron.d/$USERNAME"
+
+  cd $OriginalDir
+}
+
+#Force to run as sudo.
+if [ $(id -u) -eq 0 ]; then
+  func $@
+else 
+  func -h
+  echo "You must be sudo to run this script."
+  echo "Exiting."
+  exit 1
+fi
+
