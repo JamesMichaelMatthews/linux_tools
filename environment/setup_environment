@@ -135,9 +135,9 @@ func() {
   ln -s ./vim-pathogen/autoload autoload
   mkdir -p ~/.vim/bundle
   cd ~/.vim/bundle
-  # clang_complete
-  git clone https://github.com/JamesMichaelMatthews/clang_complete
-  sudo apt-get install libclang-3.3-dev
+  ## clang_complete
+  #git clone https://github.com/JamesMichaelMatthews/clang_complete
+  #sudo apt-get install libclang-3.3-dev
   # supertab
   git clone https://github.com/JamesMichaelMatthews/supertab
   # ctags
