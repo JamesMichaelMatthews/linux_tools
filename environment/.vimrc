@@ -128,16 +128,56 @@ let g:DoxygenToolkit_classTag = "\\class "
 :set shiftwidth=2
 
 "auto indent and comments
-" c: autowrap comments using textwidth
-" r: auto comment a newline after <Enter>
-" o: auto comment after 'o' or 'O'
-" j: remove comment leaders when joining lines
-" autoindent: repeat indent from previous line
-" smartindent: autoindent based on language
-:set textwidth=80
-:set formatoptions=croj
-:set autoindent
-:set smartindent
+"  Set Script Local functions and command mappings
+:command EditAutoModeCode :call <SID>EditAutoModeCode()
+:command EditAutoModeComments :call <SID>EditAutoModeComments()
+:command EditAutoModeText :call <SID>EditAutoModeText()
+:command EditAutoMode :call <SID>EditAutoMode()
+"  Define the functions
+"    c: autowrap comments using textwidth
+"    r: auto comment a newline after <Enter>
+"    o: auto comment after 'o' or 'O'
+"    j: remove comment leaders when joining lines
+"    autoindent: repeat indent from previous line
+"    smartindent: autoindent based on language
+function! s:EditAutoModeCode()
+  :let w:editautomode=1
+  :set textwidth=80
+  :set formatoptions=""
+  :set autoindent
+  :set smartindent
+endfunction
+function! s:EditAutoModeComments()
+  :let w:editautomode=2
+  :set textwidth=80
+  :set formatoptions=croj
+  :set autoindent
+  :set smartindent
+endfunction
+function! s:EditAutoModeText()
+  :let w:editautomode=3
+  :set textwidth=80
+  :set formatoptions=""
+  :set noautoindent
+  :set nosmartindent
+endfunction
+function! s:EditAutoMode() "Toggle
+  if !exists('w:editautomode')
+    :call <SID>EditAutoModeCode()
+    :echom "Edit Auto Mode is Code."
+  elseif w:editautomode == 1
+    :call <SID>EditAutoModeComments()
+    :echom "Edit Auto Mode is Comments."
+  elseif w:editautomode == 2
+    :call <SID>EditAutoModeText()
+    :echom "Edit Auto Mode is Text."
+  else
+    :call <SID>EditAutoModeCode()
+    :echom "Edit Auto Mode is Code."
+  endif
+endfunction
+"  Start in Code Mode
+:EditAutoModeCode
 
 "make all yanks go into the 0 register
 :nnoremap yy "0yy
