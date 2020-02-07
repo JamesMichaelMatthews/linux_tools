@@ -244,3 +244,6 @@ function! s:EightyHighlight() "Toggle
   endif
 endfunction
 
+" Start NERDTree at the start
+autocmd VimEnter * NERDTree
+
