@@ -190,6 +190,11 @@ endfunction
 :nnoremap P "0P
 :vnoremap p "0p
 :vnoremap P "0P
+"copy and paste to/from the system clipboard (requires +clipboard via vim-gtk3)
+:nnoremap cyy "+yy
+:vnoremap cy "+y
+:nnoremap cp "+p
+:nnoremap cP "+P
 
 "make it easier to move between windows
 :nnoremap J <C-w>j

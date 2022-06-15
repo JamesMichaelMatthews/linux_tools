@@ -121,7 +121,7 @@ func() {
   fi
 
   #install apps
-  sudo apt-get install vim tmux
+  sudo apt-get install vim vim-gtk3 tmux
   
   #copy config files
   cp $RealScriptDir/.vimrc ~/
